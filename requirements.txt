@@ -1,7 +1,37 @@
-django
-gunicorn
-python-dotenv
-psycopg2
-whitenoise
-openpyxl
-pyotp
+# Django Framework
+Django>=3.2,<5.0
+
+# Web Server
+gunicorn>=20.1.0
+
+# Environment Variables
+python-dotenv>=0.19.0
+
+# Database
+psycopg2-binary>=2.9.0
+
+# Static Files Management
+whitenoise>=6.0.0
+
+# Excel File Handling
+openpyxl>=3.7.0
+
+# MFA - Multi-Factor Authentication
+pyotp>=2.8.0
+qrcode>=7.4.0
+Pillow>=9.0.0
+
+# Testing (opcional, para desarrollo)
+pytest>=7.0.0
+pytest-django>=4.5.0
+
+# Code Quality (opcional, para desarrollo)
+black>=22.0.0
+flake8>=4.0.0
+isort>=5.10.0
+
+# Security
+django-cors-headers>=3.11.0
+
+# API y Utilities
+requests>=2.28.0
