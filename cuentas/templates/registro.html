@@ -3,61 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <title>Registro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-</head>
-<body class="bg-gradient-to-r from-[#FF7E00] to-[#FFB347] h-screen flex items-center justify-center">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            min-height: 100vh;
+        }
+        .register-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        .register-header {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            border-radius: 16px 16px 0 0;
+            padding: 2rem;
+            text-align: center;
+            color: white;
+        }
+        .register-header h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin: 0;
+        }
+        .register-header i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #fbbf24;
+        }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #f97316;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+        .error-text {
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.3);
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        .login-link a {
+            color: #f97316;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .login-link a:hover {
+            color: #ea580c;
+        }
+    </style>
 
     <!-- Card para el registro -->
-    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-        <!-- Título -->
-        <div class="text-center mb-6">
-            <h2 class="text-2xl font-semibold mt-4">Crear Cuenta</h2>
+    <div class="register-container w-full max-w-md">
+        <div class="register-header">
+            <i class="fas fa-user-plus"></i>
+            <h2>Crear Cuenta</h2>
         </div>
 
-        <!-- Formulario de registro -->
-        <form method="post">
-            {% csrf_token %}
-            
-            <!-- Campo de nombre de usuario -->
-            <div class="mb-4">
-                <label for="{{ form.nombre.id_for_label}}" class="block text-gray-700 font-medium">{{ form.nombre.label }}</label>
-                {{ form.nombre }}
-                {% if form.nombre.errors %}
-                <div class="mt-2 text-sm text-red-600">{{ form.nombre.errors }}</div>
-                {% endif %}
-            </div>
+        <div class="p-8">
+            <!-- Formulario de registro -->
+            <form method="post">
+                {% csrf_token %}
+                
+                <!-- Campo de nombre de usuario -->
+                <div class="form-group">
+                    <label for="{{ form.nombre.id_for_label}}">
+                        <i class="fas fa-user mr-2" style="color: #667eea;"></i>{{ form.nombre.label }}
+                    </label>
+                    {{ form.nombre }}
+                    {% if form.nombre.errors %}
+                    <div class="error-text">{{ form.nombre.errors.0 }}</div>
+                    {% endif %}
+                </div>
 
-            <!-- Campo de correo electrónico -->
-            <div class="mb-4">
-                <label for="{{ form.correo.id_for_label}}" class="block text-gray-700 font-medium">{{ form.correo.label }}</label>
-                {{ form.correo }}
-                {% if form.correo.errors %}
-                <div class="mt-2 text-sm text-red-600">{{ form.correo.errors }}</div>
-                {% endif %}
-            </div>
+                <!-- Campo de correo electrónico -->
+                <div class="form-group">
+                    <label for="{{ form.correo.id_for_label}}">
+                        <i class="fas fa-envelope mr-2" style="color: #667eea;"></i>{{ form.correo.label }}
+                    </label>
+                    {{ form.correo }}
+                    {% if form.correo.errors %}
+                    <div class="error-text">{{ form.correo.errors.0 }}</div>
+                    {% endif %}
+                </div>
 
-            <!-- Campo de contraseña -->
-            <div class="mb-4">
-                <label for="{{ form.password.id_for_label}}" class="block text-gray-700 font-medium">{{ form.password.label }}</label>
-                {{ form.password }}
-                {% if form.password.errors %}
-                <div class="mt-2 text-sm text-red-600">{{ form.password.errors }}</div>
-                {% endif %}
-            </div>
+                <!-- Campo de contraseña -->
+                <div class="form-group">
+                    <label for="{{ form.password.id_for_label}}">
+                        <i class="fas fa-lock mr-2" style="color: #667eea;"></i>{{ form.password.label }}
+                    </label>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                    <div class="error-text">{{ form.password.errors.0 }}</div>
+                    {% endif %}
+                </div>
 
-            <!-- Botón de registro -->
-            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-300">
-                Registrarse
-            </button>
+                <!-- Botón de registro -->
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-check mr-2"></i>Registrarse
+                </button>
 
-            <!-- Enlace para login -->
-            <div class="mt-4 text-center">
-                <small class="text-gray-600">
-                    ¿Ya tienes cuenta? 
-                    <a href="{% url 'cuentas:login' %}" class="text-blue-600 hover:underline">Inicia sesión aquí</a>
-                </small>
-            </div>
-        </form>
+                <!-- Enlace para login -->
+                <div class="login-link">
+                    <small>¿Ya tienes cuenta? 
+                        <a href="{% url 'cuentas:login' %}">Inicia sesión aquí</a>
+                    </small>
+                </div>
+            </form>
+        </div>
     </div>
 
 </body>

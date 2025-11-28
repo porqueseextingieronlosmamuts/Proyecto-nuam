@@ -3,63 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <title>Iniciar Sesión</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            min-height: 100vh;
+        }
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        .login-header {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            border-radius: 16px 16px 0 0;
+            padding: 2rem;
+            text-align: center;
+            color: white;
+        }
+        .login-header h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin: 0;
+        }
+        .login-header i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #fbbf24;
+        }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.3);
+        }
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #dc2626;
+        }
+        .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        .register-link a {
+            color: #0ea5e9;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .register-link a:hover {
+            color: #0284c7;
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-r from-[#FF7E00] to-[#FFB347] h-screen flex items-center justify-center">
+<body class="flex items-center justify-center min-h-screen px-4">
 
     <!-- Card para el login -->
-    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-        <!-- Título -->
-        <div class="text-center mb-6">
-            <h2 class="text-2xl font-semibold mt-4">Iniciar sesión</h2>
+    <div class="login-container w-full max-w-md">
+        <div class="login-header">
+            <i class="fas fa-lock"></i>
+            <h2>Iniciar sesión</h2>
         </div>
 
-        {% if messages %}
-            <div class="bg-red-100 text-red-600 p-4 rounded-lg mb-4">
-                {% for message in messages %}
-                    <p>{{ message }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-        
-        <!-- Formulario de login -->
-        <form method="POST">
-            {% csrf_token %}
-            
-            <!-- Si hay error en el login -->
-            {% if form.errors %}
-                <div class="bg-red-100 text-red-600 p-4 rounded-lg mb-4">
-                    Usuario o contraseña incorrectos
+        <div class="p-8">
+            {% if messages %}
+                <div class="error-message">
+                    {% for message in messages %}
+                        <p><i class="fas fa-exclamation-circle mr-2"></i>{{ message }}</p>
+                    {% endfor %}
                 </div>
             {% endif %}
+            
+            <!-- Formulario de login -->
+            <form method="POST">
+                {% csrf_token %}
+                
+                <!-- Si hay error en el login -->
+                {% if form.errors %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>Usuario o contraseña incorrectos
+                    </div>
+                {% endif %}
 
-            <!-- Campo de correo -->
-            <div class="mb-4">
-                <label for="correo" class="block text-gray-700 font-medium">Correo electrónico</label>
-                <input type="email" name="correo" value="{{ form.correo.value }}" 
-                       class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" required>
-            </div>
+                <!-- Campo de correo -->
+                <div class="form-group">
+                    <label for="correo"><i class="fas fa-envelope mr-2" style="color: #667eea;"></i>Correo electrónico</label>
+                    <input type="email" name="correo" value="{{ form.correo.value }}" required>
+                </div>
 
-            <!-- Campo de contraseña -->
-            <div class="mb-4">
-                <label for="password" class="block text-gray-700 font-medium">Contraseña</label>
-                <input type="password" name="password" 
-                       class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" required>
-            </div>
+                <!-- Campo de contraseña -->
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-key mr-2" style="color: #667eea;"></i>Contraseña</label>
+                    <input type="password" name="password" required>
+                </div>
 
-            <!-- Botón de login -->
-            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-300">
-                Iniciar sesión
-            </button>
+                <!-- Botón de login -->
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Iniciar sesión
+                </button>
 
-            <!-- Enlace para registro -->
-            <div class="mt-4 text-center">
-                <small class="text-gray-600">
-                    ¿No tienes cuenta? 
-                    <a href="{% url 'cuentas:registro' %}" class="text-blue-600 hover:underline">Regístrate aquí</a>
-                </small>
-            </div>
-        </form>
+                <!-- Enlace para registro -->
+                <div class="register-link">
+                    <small>¿No tienes cuenta? 
+                        <a href="{% url 'cuentas:registro' %}">Regístrate aquí</a>
+                    </small>
+                </div>
+            </form>
+        </div>
     </div>
 
 </body>
