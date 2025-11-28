@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habilitar MFA - NUAM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-slate-900 to-slate-800 min-h-screen p-4">
+    <div class="max-w-4xl mx-auto">
+        <!-- Breadcrumb -->
+        <div class="mb-8">
+            <a href="{% url 'dashboard:dashboard' %}" class="text-slate-300 hover:text-white transition">
+                <i class="fas fa-arrow-left mr-2"></i>Volver al Dashboard
+            </a>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Panel Izquierdo - Información -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8">
+                <div class="mb-6">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                        <i class="fas fa-shield-alt text-indigo-600 mr-2"></i>Autenticación en Dos Factores
+                    </h1>
+                    <p class="text-gray-600">Aumenta la seguridad de tu cuenta</p>
+                </div>
+
+                {% if mfa_enabled %}
+                    <!-- MFA Habilitado -->
+                    <div class="bg-green-50 border-2 border-green-200 rounded-lg p-6 mb-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                            <span class="text-green-700 font-bold">MFA Habilitado</span>
+                        </div>
+                        <p class="text-green-700 text-sm">
+                            Tu cuenta está protegida con autenticación en dos factores. Se te solicitará un código cada vez que inicies sesión.
+                        </p>
+                    </div>
+
+                    <!-- Botón para deshabilitar -->
+                    <form method="POST" class="space-y-4">
+                        {% csrf_token %}
+                        <input type="hidden" name="accion" value="deshabilitar">
+                        <button 
+                            type="submit"
+                            onclick="return confirm('¿Estás seguro de que deseas deshabilitar MFA?')"
+                            class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2"
+                        >
+                            <i class="fas fa-times-circle"></i>Deshabilitar MFA
+                        </button>
+                    </form>
+                {% else %}
+                    <!-- MFA Deshabilitado -->
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                            <h3 class="font-bold text-blue-700 mb-2">
+                                <i class="fas fa-info-circle mr-2"></i>¿Por qué habilitar MFA?
+                            </h3>
+                            <ul class="text-sm text-blue-700 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Protege contra acceso no autorizado</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Requiere código además de contraseña</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Compatible con apps como Google Authenticator</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Recibirás códigos por email</li>
+                            </ul>
+                        </div>
+
+                        <!-- Instrucciones -->
+                        <div class="bg-gray-50 rounded-lg p-4 space-y-3">
+                            <h4 class="font-bold text-gray-800">
+                                <i class="fas fa-list-ol text-indigo-600 mr-2"></i>Pasos para habilitar:
+                            </h4>
+                            <ol class="text-sm text-gray-700 space-y-2 ml-6 list-decimal">
+                                <li>Escanea el código QR con tu app de autenticación (Google Authenticator, Microsoft Authenticator, Authy, etc.)</li>
+                                <li>Ingresa el código de 6 dígitos generado por la app</li>
+                                <li>¡Listo! Tu cuenta estará protegida</li>
+                            </ol>
+                        </div>
+
+                        <!-- Botón para habilitar -->
+                        <form method="POST" class="space-y-4">
+                            {% csrf_token %}
+                            <input type="hidden" name="accion" value="habilitar">
+                            <button 
+                                type="submit"
+                                class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-3 px-4 rounded-lg transition flex items-center justify-center gap-2"
+                            >
+                                <i class="fas fa-shield-alt"></i>Habilitar MFA
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Panel Derecho - QR Code -->
+            {% if qr_code and step == 'verificar' %}
+            <div class="bg-white rounded-2xl shadow-2xl p-8 flex flex-col justify-center">
+                <div class="text-center space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">
+                            <i class="fas fa-qrcode text-indigo-600 mr-2"></i>Escanear Código QR
+                        </h2>
+                        <p class="text-gray-600 text-sm">Usa tu app de autenticación para escanear</p>
+                    </div>
+
+                    <!-- QR Code -->
+                    <div class="bg-gray-50 p-6 rounded-lg flex justify-center">
+                        <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code MFA" class="w-64 h-64">
+                    </div>
+
+                    <!-- Código secreto de respaldo -->
+                    <div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-4">
+                        <p class="text-sm text-gray-700 mb-2">
+                            <i class="fas fa-key text-yellow-600 mr-2"></i><strong>Clave secreta (guárdala en un lugar seguro):</strong>
+                        </p>
+                        <div class="bg-gray-100 p-3 rounded font-mono text-sm break-all select-all">
+                            {{ secret }}
+                        </div>
+                        <p class="text-xs text-yellow-700 mt-2">
+                            Úsala si pierdes acceso a tu app de autenticación
+                        </p>
+                    </div>
+
+                    <!-- Verificación del código -->
+                    <form method="POST" class="space-y-4">
+                        {% csrf_token %}
+                        <input type="hidden" name="accion" value="confirmar">
+                        
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">
+                                <i class="fas fa-check-circle mr-1 text-green-600"></i>Ingresa el código de 6 dígitos
+                            </label>
+                            <input 
+                                type="text" 
+                                name="codigo" 
+                                maxlength="6" 
+                                placeholder="000000"
+                                required
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 text-center text-2xl font-bold tracking-widest transition"
+                            >
+                        </div>
+
+                        <!-- Mensajes -->
+                        {% if messages %}
+                            <div class="space-y-2">
+                                {% for message in messages %}
+                                    <div class="bg-red-50 border-l-4 border-red-500 p-3 rounded">
+                                        <p class="text-red-700 text-sm">{{ message }}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <button 
+                            type="submit"
+                            class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition flex items-center justify-center gap-2"
+                        >
+                            <i class="fas fa-check-circle"></i>Confirmar y Habilitar
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

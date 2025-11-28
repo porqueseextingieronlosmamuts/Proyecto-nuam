@@ -133,6 +133,11 @@
                 </h1>
 
                 <div class="flex items-center space-x-4">
+                    <!-- Botón de configuración MFA -->
+                    <a href="{% url 'cuentas:habilitar_mfa' %}" class="text-gray-700 hover:bg-gray-100 p-2 rounded-full transition" title="Configurar MFA">
+                        <i class="fas fa-shield-alt text-2xl" style="color: #667eea;"></i>
+                    </a>
+
                     <!-- Icono de perfil -->
                     <button class="text-gray-700 hover:bg-gray-100 p-2 rounded-full transition">
                         <i class="fas fa-user-circle text-2xl" style="color: #667eea;"></i>

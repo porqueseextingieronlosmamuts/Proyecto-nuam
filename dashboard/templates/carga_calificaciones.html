@@ -277,8 +277,8 @@
             </label>
             <span id="file-name" class="file-name">Ningún archivo seleccionado</span>
 
-            <button type="submit" class="btn btn-primary" id="btn-grabar" disabled>
-                <i class="fas fa-save"></i>GRABAR
+            <button type="submit" class="btn btn-primary" id="btn-agregar" disabled>
+                <i class="fas fa-save"></i>AGREGAR
             </button>
 
             <a href="{% url 'dashboard:dashboard' %}" class="btn btn-secondary">
@@ -308,7 +308,7 @@
     // ajusta si tu input file tiene otro id
     const fileInput  = document.querySelector('input[type="file"]');
     const fileNameEl = document.getElementById('file-name');
-    const btnGrabar  = document.getElementById('btn-grabar');
+    const btnAgregar  = document.getElementById('btn-agregar');
     const table      = document.getElementById('preview-table');
     const thead      = table.querySelector('thead');
     const tbody      = table.querySelector('tbody');
@@ -317,7 +317,7 @@
         const file = this.files[0];
         if (!file) {
             fileNameEl.textContent = 'Ningún archivo seleccionado';
-            btnGrabar.disabled = true;
+            btnAgregar.disabled = true;
             return;
         }
 
@@ -351,7 +351,7 @@
 
             if (rows.length === 0) {
                 tbody.innerHTML = '<tr><td class="no-data">No hay registros.</td></tr>';
-                btnGrabar.disabled = true;
+                btnAgregar.disabled = true;
                 return;
             }
 
@@ -369,7 +369,7 @@
             const dataRows = rows.slice(1);
             if (dataRows.length === 0) {
                 tbody.innerHTML = '<tr><td class="no-data">No hay registros.</td></tr>';
-                btnGrabar.disabled = true;
+                btnAgregar.disabled = true;
                 return;
             }
 
@@ -383,8 +383,8 @@
                 tbody.appendChild(tr);
             });
 
-            // Habilitar GRABAR solo si hay datos
-            btnGrabar.disabled = dataRows.length === 0;
+            // Habilitar AGREGAR solo si hay datos
+            btnAgregar.disabled = dataRows.length === 0;
         };
 
         // IMPORTANTE: para xlsx usamos readAsArrayBuffer
