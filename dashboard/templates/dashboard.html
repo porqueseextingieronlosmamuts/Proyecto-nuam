@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
+</head>
+
+<body class="bg-gradient-to-r from-[#FF7E00] to-[#FFB347]">
+
+    <!-- Sidebar (navegación) -->
+    <div x-data="{ open: true }" class="flex h-screen">
+        <div :class="{'w-64': open, 'w-20': !open}" class="bg-white transition-all duration-300 shadow-md p-4">
+            <div class="flex items-center justify-between mb-8">
+                <button @click="open = !open" class="p-2 text-gray-700">
+                    <svg :class="{'rotate-180': !open}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"></path>
+                    </svg>
+                </button>
+                <h2 :class="{'hidden': !open}" class="text-2xl font-bold">Dashboard</h2>
+            </div>
+            <ul class="space-y-4">
+                <li><a href="{% url 'dashboard:agregar_calificacion' %}" class="flex items-center space-x-4 text-gray-700 hover:bg-gray-200 px-4 py-2 rounded-md">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v8m4-4H8"></path>
+                        </svg>
+                        <span :class="{'hidden': !open}">Agregar calificación</span>
+                    </a>
+                </li>
+                <li><a href="{% url 'dashboard:carga_masiva' %}" class="flex items-center space-x-4 text-gray-700 hover:bg-gray-200 px-4 py-2 rounded-md">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16M4 12h16M4 20h16"></path>
+                        </svg>
+                        <span :class="{'hidden': !open}">Carga masiva</span>
+                    </a>
+                </li>
+                <li><a href="{% url 'dashboard:buscar_calificaciones' %}" class="flex items-center space-x-4 text-gray-700 hover:bg-gray-200 px-4 py-2 rounded-md">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14M5 12h14"></path>
+                        </svg>
+                        <span :class="{'hidden': !open}">Buscar calificaciones</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-6">
+            <!-- Navbar de usuario -->
+            <nav class="flex justify-between items-center mb-8">
+                <div>
+                    <!-- Icono de abrir el sidebar -->
+                    <button id="sidebar-toggle" class="text-gray-700 p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <!-- Icono de perfil -->
+                    <button class="text-gray-700 hover:bg-gray-200 p-2 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-3.87 0-7 3.13-7 7h14c0-3.87-3.13-7-7-7z"></path>
+                        </svg>
+                    </button>
+
+                    <!-- Botón de Logout -->
+                    <a href="{% url 'dashboard:logout' %}" class="text-gray-700 hover:bg-gray-200 p-2 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H3"></path>
+                        </svg>
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Buscador de Calificaciones -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">Buscar Calificaciones</h2>
+                <form action="{% url 'dashboard:buscar_calificaciones' %}" method="GET" class="flex space-x-4">
+                    <input type="text" name="query" class="p-3 rounded-md border border-gray-300 w-full" placeholder="Buscar por nombre, email, etc." required>
+                    <button type="submit" class="bg-orange-500 text-white p-3 rounded-md hover:bg-orange-600">
+                        Buscar
+                    </button>
+                </form>
+            </div>
+
+            <!-- Resultados de la Búsqueda -->
+            {% if calificaciones %}
+                <div class="mt-6">
+                    <h3 class="text-xl font-semibold mb-4">Resultados de la búsqueda</h3>
+                    <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+                        <thead>
+                            <tr>
+                                <th class="p-4 text-left">Nombre</th>
+                                <th class="p-4 text-left">Calificación</th>
+                                <th class="p-4 text-left">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for calificacion in calificaciones %}
+                                <tr class="border-t">
+                                    <td class="p-4">{{ calificacion.nombre }}</td>
+                                    <td class="p-4">{{ calificacion.calificacion }}</td>
+                                    <td class="p-4">
+                                        <a href="{% url 'dashboard:modificar_calificacion' calificacion.pk %}" class="text-blue-500 hover:text-blue-600">Editar</a> | 
+                                        <a href="{% url 'dashboard:eliminar_calificacion' calificacion.pk %}" class="text-red-500 hover:text-red-600">Eliminar</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>No se encontraron resultados para tu búsqueda.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('sidebar-toggle').addEventListener('click', function () {
+            document.getElementById('sidebar').classList.toggle('hidden');
+        });
+    </script>
+
+</body>
+
+</html>

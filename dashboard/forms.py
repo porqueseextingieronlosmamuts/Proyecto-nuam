@@ -1,0 +1,88 @@
+from django import forms
+from .models import Calificacion
+
+class CargaCalificacionesForm(forms.Form):
+        archivo = forms.FileField(label="Archivo de calificaciones")
+
+class CalificacionForm(forms.ModelForm):
+    class Meta:
+        model = Calificacion
+        fields = [
+            'ejercicio', 'mercado', 'instrumento', 'fecha', 
+            'secuencia', 'numero_dividendo', 'tipo_sociedad', 
+            'valor_historico', 'factor_8', 'factor_9', 'factor_10',
+            'factor_11', 'factor_12', 'factor_13', 'factor_14', 
+            'factor_15', 'factor_16', 'factor_17', 'factor_18', 
+            'factor_19', 'factor_20', 'factor_21', 'factor_22', 
+            'factor_23', 'factor_24', 'factor_25', 'factor_26', 
+            'factor_27', 'factor_28', 'factor_29', 'factor_30', 
+            'factor_31', 'factor_32', 'factor_33', 'factor_34', 
+            'factor_35', 'factor_36', 'factor_37'
+        ]
+        labels = {
+            "factor_8":  "Factor-08 No Constitutiva de\nRenta No Acogido a Impto.",
+            "factor_9":  "Factor-09 Impto. 1ra Categ.\nAfecto GI. Comp. Con\nDevolución",
+            "factor_10": "Factor-10 Impuesto Tasa\nAdicional Exento Art.21",
+            "factor_11": "Factor-11 Incremento\nImpuesto 1ra Categoria",
+            "factor_12": "Factor-12 Impto. 1ra Categ.\nExento Gi. Comp. Comp. Con\nDevolucion",
+            "factor_13": "Factor-13 Impto. 1ra Categ.\nAfecto Gl Comp. Sin\nDevolución",
+            "factor_14": "Factor-14 Impto. 1ra Categ.\nExento GI. Comp. Sin\nDevolución",
+            "factor_15": "Factor-15 Impto. Creditos\npro Impuestos Externos",
+            "factor_16": "Factor-16 No Constitutiva de\nRenta Acogido a Impto.",
+            "factor_17": "Factor-17 No Constitutiva de\nRenta Devolución de Capital\nArt.17",
+            "factor_18": "Factor-18 Rentas Exentas de Impto.\nGC Y/O Impto. Adicional",
+            "factor_19": "Factor-19A Ingreso no\nConstitutivos de Renta",
+            "factor_20": "Factor-20 Sin Derecho a\nDevolución",
+            "factor_21": "Factor-21 Con Derecho a\nDevolución",
+            "factor_22": "Factor-22 Sin Derecho a\nDevolución",
+            "factor_23": "Factor-23 Con Derecho a\nDevolución",
+            "factor_24": "Factor-24 Sin Derecho a\nDevolución",
+            "factor_25": "Factor-25 Con Derecho a\nDevolución",
+            "factor_26": "Factor-26 Sin Derecho a\nDevolución",
+            "factor_27": "Factor-27 Con Derecho a\nDevolución",
+            "factor_28": "Factor-28 Credito por IPE",
+            "factor_29": "Factor-29 Sin Derecho a\nDevolucion",
+            "factor_30": "Factor 30 Con Derecho a Devolucion",
+            "factor_31": "Factor 31 Sin Derecho a Devolucion",
+            "factor_32": "Factor 32 Con Derecho a Devolucion",
+            "factor_33": "Factor 33 Credito por IPE",
+            "factor_34": "Factor 34 Cred. Por Impto. Tasa Adicional. Ex Art 21 LIR",
+            "factor_35": "Factor 35 Tasa Efectiva Del Cred. Del FUT(TEF)",
+            "factor_36": "Factor 36 Tasa Efectiva Del Cred. Del FUNT(TEX)",
+            "factor_37": "Factor 37 Devolucion de Capital Art. 17 num 7 LIR",
+        }
+        widgets = {
+            'fecha': forms.DateInput(attrs={'type': 'date'}),
+            'ejercicio': forms.NumberInput(attrs={'min': 1000, 'max': 9999}),
+            'valor_historico': forms.NumberInput(attrs={'step': '0.01'}),
+            'factor_8': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_9': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_10': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_11': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_12': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_13': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_14': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_15': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_16': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_17': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_18': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_19': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_20': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_21': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_22': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_23': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_24': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_25': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_26': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_27': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_28': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_29': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_30': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_31': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_32': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_33': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_34': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_35': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_36': forms.NumberInput(attrs={'step': '0.00000001'}),
+            'factor_37': forms.NumberInput(attrs={'step': '0.00000001'}),
+        }

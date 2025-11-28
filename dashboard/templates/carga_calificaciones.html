@@ -1,0 +1,289 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Carga masiva de calificaciones</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .modal {
+            max-width: 1000px;
+            margin: 2rem auto;
+            background: #fff;
+            border-radius: 6px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .modal-body {
+            padding: 0.75rem 1rem;
+        }
+
+        .tab-header {
+            background: #1f2937;
+            color: #fff;
+            padding: 0.4rem 0.8rem;
+            display: inline-block;
+            border-radius: 4px 4px 0 0;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .table-wrapper {
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            max-height: 280px;
+            overflow: auto;
+            font-size: 0.8rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0.3rem 0.4rem;
+            white-space: nowrap;
+        }
+
+        thead {
+            background: #f3f4f6;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 1rem;
+            color: #6b7280;
+        }
+
+        .modal-footer {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .btn {
+            border-radius: 4px;
+            border: 1px solid transparent;
+            padding: 0.4rem 1.4rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .btn-primary:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .btn-outline {
+            background: #fff;
+            border-color: #9ca3af;
+            color: #111827;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-label {
+            border-radius: 4px;
+            border: 1px solid #2563eb;
+            padding: 0.4rem 1.2rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: #fff;
+            color: #2563eb;
+        }
+
+        .file-name {
+            font-size: 0.8rem;
+            color: #4b5563;
+            margin-left: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+
+<h1 style="text-align:center;margin-top:1rem;">Carga masiva de calificaciones</h1>
+
+<form method="post" enctype="multipart/form-data" id="carga-form">
+    {% csrf_token %}
+
+    <div class="modal">
+        <div class="modal-header">
+            Cargar Archivo
+        </div>
+
+        <div class="modal-body">
+            <div class="tab-header">Archivo</div>
+
+            <div class="table-wrapper">
+                <table id="preview-table">
+                    <thead>
+                        <!-- Se llena dinámicamente con el encabezado del archivo -->
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="no-data">No hay registros.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <!-- Campo de archivo de tu formulario -->
+            <!-- AJUSTA "archivo" AL NOMBRE REAL DEL CAMPO EN TU FORM -->
+            <label class="file-label">
+                Seleccionar Archivo
+                {{ form.archivo }}
+            </label>
+            <span id="file-name" class="file-name">Ningún archivo seleccionado</span>
+
+            <button type="submit" class="btn btn-primary" id="btn-grabar" disabled>
+                GRABAR
+            </button>
+
+            <a href="{% url 'dashboard:dashboard' %}" class="btn btn-secondary">
+                CANCELAR
+            </a>
+
+            <a href="{% static 'formatos/formato.xlsx' %}" 
+            class="btn btn-outline"
+            download>
+                VER FORMATO
+            </a>
+        </div>
+    </div>
+</form>
+
+{% if messages %}
+    <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<script>
+    // ajusta si tu input file tiene otro id
+    const fileInput  = document.querySelector('input[type="file"]');
+    const fileNameEl = document.getElementById('file-name');
+    const btnGrabar  = document.getElementById('btn-grabar');
+    const table      = document.getElementById('preview-table');
+    const thead      = table.querySelector('thead');
+    const tbody      = table.querySelector('tbody');
+
+    fileInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) {
+            fileNameEl.textContent = 'Ningún archivo seleccionado';
+            btnGrabar.disabled = true;
+            return;
+        }
+
+        fileNameEl.textContent = file.name;
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            // Leemos como binario/array para XLSX
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+
+            // Tomamos la primera hoja
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+
+            // Obtenemos los datos como matriz de filas
+            // header:1 -> primera fila = encabezados
+            // defval:"" -> celdas vacías como string vacío
+            let rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+
+            // Opcional: limitar filas mostradas (ej. primeras 500)
+            const MAX_ROWS = 500;
+            if (rows.length > MAX_ROWS + 1) {
+                rows = rows.slice(0, MAX_ROWS + 1);
+            }
+
+            // Limpiamos tabla
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+
+            if (rows.length === 0) {
+                tbody.innerHTML = '<tr><td class="no-data">No hay registros.</td></tr>';
+                btnGrabar.disabled = true;
+                return;
+            }
+
+            // Primera fila = encabezados
+            const headers = rows[0];
+            const headerTr = document.createElement('tr');
+            headers.forEach(h => {
+                const th = document.createElement('th');
+                th.textContent = (h || '').toString().trim();
+                headerTr.appendChild(th);
+            });
+            thead.appendChild(headerTr);
+
+            // Resto de filas = datos
+            const dataRows = rows.slice(1);
+            if (dataRows.length === 0) {
+                tbody.innerHTML = '<tr><td class="no-data">No hay registros.</td></tr>';
+                btnGrabar.disabled = true;
+                return;
+            }
+
+            dataRows.forEach(row => {
+                const tr = document.createElement('tr');
+                row.forEach(cell => {
+                    const td = document.createElement('td');
+                    td.textContent = (cell || '').toString();
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+
+            // Habilitar GRABAR solo si hay datos
+            btnGrabar.disabled = dataRows.length === 0;
+        };
+
+        // IMPORTANTE: para xlsx usamos readAsArrayBuffer
+        reader.readAsArrayBuffer(file);
+    });
+</script>
+
+</body>
+</html>

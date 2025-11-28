@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gradient-to-r from-[#FF7E00] to-[#FFB347] h-screen flex items-center justify-center">
+
+    <!-- Card para el registro -->
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <!-- Título -->
+        <div class="text-center mb-6">
+            <h2 class="text-2xl font-semibold mt-4">Crear Cuenta</h2>
+        </div>
+
+        <!-- Formulario de registro -->
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Campo de nombre de usuario -->
+            <div class="mb-4">
+                <label for="{{ form.nombre.id_for_label}}" class="block text-gray-700 font-medium">{{ form.nombre.label }}</label>
+                {{ form.nombre }}
+                {% if form.nombre.errors %}
+                <div class="mt-2 text-sm text-red-600">{{ form.nombre.errors }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Campo de correo electrónico -->
+            <div class="mb-4">
+                <label for="{{ form.correo.id_for_label}}" class="block text-gray-700 font-medium">{{ form.correo.label }}</label>
+                {{ form.correo }}
+                {% if form.correo.errors %}
+                <div class="mt-2 text-sm text-red-600">{{ form.correo.errors }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Campo de contraseña -->
+            <div class="mb-4">
+                <label for="{{ form.password.id_for_label}}" class="block text-gray-700 font-medium">{{ form.password.label }}</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                <div class="mt-2 text-sm text-red-600">{{ form.password.errors }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Botón de registro -->
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-300">
+                Registrarse
+            </button>
+
+            <!-- Enlace para login -->
+            <div class="mt-4 text-center">
+                <small class="text-gray-600">
+                    ¿Ya tienes cuenta? 
+                    <a href="{% url 'cuentas:login' %}" class="text-blue-600 hover:underline">Inicia sesión aquí</a>
+                </small>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>
