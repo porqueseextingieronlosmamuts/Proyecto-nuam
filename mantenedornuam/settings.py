@@ -91,11 +91,11 @@ STORAGES = {
 #    'default': {
 #        # Se agregan los datos de la bd de supabase utilizando os y obteniendolas (getenv) del archivo .env 
 #        'ENGINE': 'django.db.backends.postgresql',
-#        'NAME': os.getenv('dbname'),
-#        'USER': os.getenv('user'),
-#        'PASSWORD': os.getenv('password'),
-#        'HOST': os.getenv('host'),
-#        'PORT': os.getenv('port'),
+#        'NAME': os.getenv('db_name'),
+#        'USER': os.getenv('db_user'),
+#        'PASSWORD': os.getenv('db_password'),
+#        'HOST': os.getenv('db_host'),
+#        'PORT': os.getenv('db_port'),
 #    }
 #}
 
